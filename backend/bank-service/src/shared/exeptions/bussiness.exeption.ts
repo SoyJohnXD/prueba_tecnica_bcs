@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '../constants/app.constants';
 import { BaseException } from './base.exception';
 
 export class NotFoundException extends BaseException {
@@ -8,18 +9,14 @@ export class NotFoundException extends BaseException {
 
 export class InsufficientFundsException extends BaseException {
   constructor() {
-    super(
-      'Saldo insuficiente para realizar la operación',
-      400,
-      'INSUFFICIENT_FUNDS',
-    );
+    super(ERROR_MESSAGES.ACCOUNT.INSUFFICIENT_FUNDS, 400, 'INSUFFICIENT_FUNDS');
   }
 }
 
 export class MinimumBalanceException extends BaseException {
   constructor() {
     super(
-      'La transacción excede el saldo mínimo permitido',
+      ERROR_MESSAGES.ACCOUNT.MINIMUM_BALANCE,
       400,
       'MINIMUM_BALANCE_REQUIRED',
     );
