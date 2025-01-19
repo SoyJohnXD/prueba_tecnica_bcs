@@ -1,11 +1,18 @@
-import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+// src/app.module.ts
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 import { MongooseModule } from '@nestjs/mongoose';
 import { HttpModule } from '@nestjs/axios';
+
+// Middleware y Cliente de Autenticación
 import { AuthMiddleware } from './shared/auth/auth.middleware';
 import { AuthClient } from './shared/auth/auth.client';
-import { TestModule } from './modules/test/test.module';
+
+// Módulos de la Aplicación
+import { AccountModule } from './modules/account/account.module';
+import { TransactionModule } from './modules/transactions/transaction.module';
+import { InvestmentModule } from './modules/investment/investment.module';
+import { SavingsModule } from './modules/savings/savings.module';
 
 @Module({
   imports: [
@@ -17,6 +24,7 @@ import { TestModule } from './modules/test/test.module';
           'AUTH_SERVICE_URL',
           'SERVICE_API_KEY',
           'SERVICE_ID',
+          'PORT',
         ];
 
         for (const key of requiredKeys) {
@@ -27,6 +35,8 @@ import { TestModule } from './modules/test/test.module';
         return config;
       },
     }),
+
+    // Configuración de MongoDB
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -34,19 +44,25 @@ import { TestModule } from './modules/test/test.module';
       }),
       inject: [ConfigService],
     }),
-    HttpModule,
-    TestModule,
+
+    HttpModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        timeout: 5000,
+        maxRedirects: 5,
+      }),
+      inject: [ConfigService],
+    }),
+
+    AccountModule,
+    TransactionModule,
+    InvestmentModule,
+    SavingsModule,
   ],
   providers: [AuthClient],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .exclude(
-        { path: 'test/public', method: RequestMethod.GET },
-        { path: 'api/health', method: RequestMethod.GET },
-      )
-      .forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes('*');
   }
 }

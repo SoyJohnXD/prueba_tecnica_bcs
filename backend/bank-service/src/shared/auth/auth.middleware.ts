@@ -3,12 +3,9 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { AuthClient } from './auth.client';
-
-interface RequestWithUser extends Request {
-  user?: any;
-}
+import { RequestWithUser } from './interfaces/auth.interface';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -16,7 +13,7 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      const authHeader = req.headers.authorization;
+      const authHeader = req.headers['authorization'];
       if (!authHeader) {
         throw new UnauthorizedException(
           'No se proporcionó token de autorización',
