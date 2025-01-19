@@ -8,7 +8,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // Configuración global
   app.setGlobalPrefix('api/auth');
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,7 +17,6 @@ async function bootstrap() {
     }),
   );
 
-  // Configuración de CORS
   app.enableCors({
     origin: [
       configService.get('BANK_SERVICE_URL'),
@@ -27,7 +25,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Middlewares
   app.use(cookieParser());
 
   const port = configService.get('PORT') || 3002;

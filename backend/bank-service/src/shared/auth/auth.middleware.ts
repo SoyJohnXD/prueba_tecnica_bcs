@@ -6,7 +6,6 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { AuthClient } from './auth.client';
 
-// Extendemos el tipo Request de una manera más moderna
 interface RequestWithUser extends Request {
   user?: any;
 }
@@ -29,10 +28,8 @@ export class AuthMiddleware implements NestMiddleware {
         throw new UnauthorizedException('Formato de token inválido');
       }
 
-      // Verificamos el token con el auth-service
       const userData = await this.authClient.verifyToken(token);
 
-      // Agregamos la información del usuario al request
       req.user = userData;
 
       next();

@@ -5,7 +5,6 @@ import { Request } from 'express';
 export class TestController {
   @Get('auth')
   async testAuth(@Req() request: Request) {
-    // Este endpoint devolverá la información del usuario si la autenticación fue exitosa
     return {
       message: 'Autenticación exitosa',
       user: request.user,
@@ -15,7 +14,6 @@ export class TestController {
 
   @Get('public')
   async testPublic() {
-    // Este endpoint será público para comparar
     return {
       message: 'Endpoint público',
       timestamp: new Date().toISOString(),
