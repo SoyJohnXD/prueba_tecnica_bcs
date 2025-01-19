@@ -26,7 +26,6 @@ export class AuthClient {
 
   async verifyToken(token: string): Promise<any> {
     try {
-      // Realizamos la petición al servicio de autenticación
       const response = await firstValueFrom(
         this.httpService.post(
           `${this.authServiceUrl}/verify-token`,
@@ -41,7 +40,6 @@ export class AuthClient {
         ),
       );
 
-      // Retornamos los datos del usuario del servicio de autenticación
       return response.data;
     } catch (error) {
       if (error.response) {

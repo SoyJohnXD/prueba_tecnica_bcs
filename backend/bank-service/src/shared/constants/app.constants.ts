@@ -49,7 +49,6 @@ export const ACCOUNT_CONFIG = {
   },
 };
 
-// Constantes para metas de ahorro
 export const SAVINGS_GOAL = {
   STATUS: {
     IN_PROGRESS: 'IN_PROGRESS',
@@ -101,7 +100,6 @@ export const ERROR_MESSAGES = {
   },
 };
 
-// Constantes para validación
 export const VALIDATION = {
   MIN_AMOUNTS: {
     TRANSACTION: 1000,

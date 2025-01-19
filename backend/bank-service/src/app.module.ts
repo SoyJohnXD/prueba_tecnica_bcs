@@ -1,14 +1,11 @@
-// src/app.module.ts
 import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HttpModule } from '@nestjs/axios';
 
-// Middleware y Cliente de Autenticación
 import { AuthMiddleware } from './shared/auth/auth.middleware';
 import { AuthClient } from './shared/auth/auth.client';
 
-// Módulos de la Aplicación
 import { AccountModule } from './modules/account/account.module';
 import { TransactionModule } from './modules/transactions/transaction.module';
 import { InvestmentModule } from './modules/investment/investment.module';
@@ -36,7 +33,6 @@ import { SavingsModule } from './modules/savings/savings.module';
       },
     }),
 
-    // Configuración de MongoDB
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
