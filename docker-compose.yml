@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   mongodb:
     image: mongo:6.0
@@ -10,6 +9,29 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin_pass_124
     volumes:
       - mongodb_data:/data/db
+
+  auth-service:
+    build:
+      context: ./backend/auth-service
+    container_name: auth-service
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./backend/auth-service/.env
+    depends_on:
+      - mongodb
+
+  bank-service:
+    build:
+      context: ./backend/bank-service
+    container_name: bank-service
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./backend/bank-service/.env
+    depends_on:
+      - mongodb
+      - auth-service
 
 volumes:
   mongodb_data:

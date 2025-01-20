@@ -20,7 +20,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       configService.get('BANK_SERVICE_URL'),
-      configService.get('FRONTEND_URL'),
+      configService.get('CLIENT_URL'),
     ],
     credentials: true,
   });
