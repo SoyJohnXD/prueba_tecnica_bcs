@@ -3,8 +3,12 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import IconBubble from "../ui/IconBubble";
 import { FaBars, FaHouse } from "react-icons/fa6";
+import Image from "next/image";
 
-export const Navbar = () => {
+interface NabvarProps {
+  openSidebar: () => void;
+}
+export const Navbar = ({ openSidebar }: NabvarProps) => {
   const { user } = useAuthStore();
 
   return (
@@ -12,14 +16,15 @@ export const Navbar = () => {
       <div className="px-9 py-9 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <IconBubble
-            className="bg-white w-11 h-11"
+            className="bg-white w-11 h-11 cursor-pointer hover:bg-gray-200"
             icon={<FaBars size={23} color="black" />}
+            onClick={openSidebar}
           />
           <IconBubble
-            className="bg-primary-800 w-11 h-11"
+            className="hidden md:grid bg-primary-800 w-11 h-11"
             icon={<FaHouse size={23} color="white" />}
           />
-          <div className="flex flex-col text-lef">
+          <div className=" hidden md:flex flex-col text-lef">
             <h4 className="text-base font-Bold">Financiera</h4>
             <span className="text-base font-light text-neutral-gray">
               Dashboard
@@ -37,7 +42,14 @@ export const Navbar = () => {
             </div>
             <IconBubble
               className="bg-primary-800 w-11 h-11"
-              icon={<span className="text-white">{user?.firstName?.[0]}</span>}
+              icon={
+                <Image
+                  src="/static/img/avatar.webp"
+                  width={44}
+                  height={44}
+                  alt="avatar"
+                />
+              }
             />
           </div>
         </div>

@@ -1,75 +1,85 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import Link from "next/link";
 import {
   FaHouse,
   FaWallet,
   FaPiggyBank,
   FaGear,
-  FaRightFromBracket,
+  FaX,
+  FaDoorOpen,
+  FaHeadset,
 } from "react-icons/fa6";
-import { useAuthStore } from "@/store/useAuthStore";
+import IconBubble from "../ui/IconBubble";
+import { Button } from "../ui/Button";
+import Link from "next/link";
 
-const navigationItems = [
-  {
-    label: "Home",
-    href: "/dashboard",
-    icon: FaHouse,
-  },
-  {
-    label: "Billetera",
-    href: "/dashboard/account",
-    icon: FaWallet,
-  },
-  {
-    label: "Inversiones",
-    href: "/dashboard/savings",
-    icon: FaPiggyBank,
-  },
-  {
-    label: "Configuración",
-    href: "/dashboard/account-config",
-    icon: FaGear,
-  },
-];
+interface SidebarProps {
+  isOpen: boolean;
+  close: () => void;
+}
 
-export const Sidebar = () => {
-  const pathname = usePathname();
-  const { logout } = useAuthStore();
+export const Sidebar = ({ isOpen, close }: SidebarProps) => {
+  const menuItems = [
+    { icon: FaHouse, label: "Home", href: "/dashboard" },
+    { icon: FaWallet, label: "Billetera", href: "/dashboard/account" },
+    {
+      icon: FaPiggyBank,
+      label: "Inversiones",
+      href: "/dashboard/account-config",
+    },
+    { icon: FaGear, label: "Metas", href: "/dashboard/savings" },
+  ];
 
   return (
-    <aside className="w-64 bg-white border-r border-neutral-200 min-h-[calc(100vh-73px)] p-4">
-      <nav className="space-y-1">
-        {navigationItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`
-                flex items-center gap-3 px-4 py-3 rounded-full
-                ${
-                  pathname === item.href
-                    ? "bg-primary-500 text-white"
-                    : "text-neutral-600 hover:bg-neutral-100"
-                }
-              `}
-            >
-              <Icon size={18} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+    <>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={close} />
+      )}
 
-        <button
-          onClick={logout}
-          className="w-full flex items-center gap-3 px-4 py-3 text-neutral-600 hover:bg-neutral-100 rounded-full mt-8"
-        >
-          <FaRightFromBracket size={18} />
-          <span>Cerrar sesión</span>
-        </button>
-      </nav>
-    </aside>
+      <div
+        className={` ${
+          isOpen ? "translate-x-5" : "-translate-x-full"
+        } fixed top-0 left-0 z-50 h-[90%] mt-9 rounded-base w-[280px] bg-white p-4 shadow-lg transition-transform duration-200 ease-in-out  `}
+      >
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b pb-4">
+            <div className="flex items-center gap-2">
+              <div className="rounded-full bg-primary p-2"></div>
+              <span className="font-semibold">Financiero</span>
+            </div>
+            <IconBubble
+              className="w-10 h-10 bg-neutral-light cursor-pointer hover:bg-gray-200"
+              icon={<FaX size={15} color="black" />}
+              onClick={close}
+            />
+          </div>
+
+          <nav className="flex-1 space-y-1 py-4">
+            {menuItems.map((item) => (
+              <Link
+                href={item.href}
+                key={item.label}
+                onClick={close}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-neutral-light cursor-pointer"
+              >
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="border-t pt-4 flex flex-row gap-2">
+            <Button className="w-full h-9 justify-start gap-2">
+              <FaDoorOpen size={23} color="white" />
+              Salir
+            </Button>
+            <Button className="w-full h-9 !bg-neutral-light !hover:bg-neutral-gray text-black justify-start gap-2">
+              <FaHeadset size={23} color="black" />
+              Ayuda
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
