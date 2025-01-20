@@ -15,7 +15,7 @@ const Register = () => {
 
   return (
     <main className="bg-neutral-light min-h-screen mx-auto flex md:flex-row">
-      <picture className="hidden md:block flex-1 bg-[url('/static/img/auth/register-background.webp')] bg-cover"></picture>
+      <picture className="hidden md:block flex-1 bg-[url('/static/img/auth/register-background.jpeg')] bg-cover"></picture>
       <section className="w-full h-screen overflow-auto sm:max-w-2xl bg-neutral-light grid place-content-center c-space">
         <Card className="w-full sm:w-[500px] py-8 bg-white flex flex-col items-center justify-center c-space">
           <IconBubble

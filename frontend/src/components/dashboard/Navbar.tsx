@@ -3,7 +3,6 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import IconBubble from "../ui/IconBubble";
 import { FaBars, FaHouse } from "react-icons/fa6";
-import Image from "next/image";
 
 interface NabvarProps {
   openSidebar: () => void;
@@ -42,14 +41,7 @@ export const Navbar = ({ openSidebar }: NabvarProps) => {
             </div>
             <IconBubble
               className="bg-primary-800 w-11 h-11"
-              icon={
-                <Image
-                  src="/static/img/avatar.webp"
-                  width={44}
-                  height={44}
-                  alt="avatar"
-                />
-              }
+              icon={<span className="text-white">{user?.firstName?.[0]}</span>}
             />
           </div>
         </div>
