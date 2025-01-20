@@ -9,6 +9,7 @@ import {
   RegisterResponse,
   Verify2FA,
 } from "@/types/auth";
+import Cookies from "js-cookie";
 
 export const useLogin = () => {
   return useMutation({
@@ -52,6 +53,10 @@ export const useVerify2FA = () => {
       return data;
     },
     onSuccess: (data) => {
+      Cookies.set("auth_token", data.access_token, {
+        secure: true,
+        sameSite: "strict",
+      });
       setAuth(data);
       router.push("/dashboard");
     },

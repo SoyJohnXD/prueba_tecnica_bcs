@@ -6,8 +6,13 @@ import { TwoFactorForm } from "./components/TwoFactorForm";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useState } from "react";
 import { Login as ILogin } from "@/types/auth";
+import { useAuth } from "@/lib/hooks/useauth";
 
 const Login = () => {
+  useAuth({
+    redirectTo: "/dashboard",
+    redirectIfFound: true,
+  });
   const login = useLogin();
   const verify2FA = useVerify2FA();
   const { tempToken, setTempToken } = useAuthStore();
