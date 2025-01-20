@@ -21,7 +21,7 @@ export const TransactionAmount = memo(
           }`}
         >
           {`${isPositiveTransaction ? "+" : "-"} $ ${formatNumberWithDots(
-            String(transaction.amount)
+            String(transaction.amount + (transaction.roundingAmount ?? 0))
           )}`}
         </p>
         {transaction.originalAmount && (

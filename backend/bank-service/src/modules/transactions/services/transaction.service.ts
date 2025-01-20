@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Transaction } from '../schemas/transaction.schema';
+import { TRANSACTION_TYPES } from 'src/shared/constants/app.constants';
 
 @Injectable()
 export class TransactionService {
@@ -88,6 +89,58 @@ export class TransactionService {
       .sort({ date: -1 });
   }
 
+  async getMonthlyMetrics(userId: string) {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const pipeline = [
+      {
+        $match: {
+          userId,
+          date: { $gte: startOfMonth },
+        },
+      },
+      {
+        $group: {
+          _id: '$type',
+          total: { $sum: '$amount' },
+          totalWithRounding: {
+            $sum: { $add: ['$amount', { $ifNull: ['$roundingAmount', 0] }] },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ];
+
+    const stats = await this.transactionModel.aggregate(pipeline);
+
+    const monthlyMetrics = {
+      monthlySavings: 0,
+      monthlyIncome: 0,
+      monthlyExpenses: 0,
+      totalRounding: 0,
+    };
+
+    stats.forEach((stat) => {
+      switch (stat._id) {
+        case TRANSACTION_TYPES.DEPOSIT:
+          monthlyMetrics.monthlyIncome = stat.total;
+          monthlyMetrics.monthlySavings += stat.total;
+          break;
+        case TRANSACTION_TYPES.PURCHASE:
+        case TRANSACTION_TYPES.WITHDRAWAL:
+          monthlyMetrics.monthlyExpenses += stat.totalWithRounding;
+          monthlyMetrics.monthlySavings -= stat.totalWithRounding;
+          break;
+        case TRANSACTION_TYPES.INVESTMENT:
+          break;
+      }
+    });
+
+    return monthlyMetrics;
+  }
+
   async getTransactionStats(userId: string) {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
@@ -117,5 +170,77 @@ export class TransactionService {
         return acc;
       }, {}),
     };
+  }
+
+  async getGraphData(userId: string) {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const pipeline = [
+      {
+        $match: {
+          userId,
+          date: { $gte: startOfMonth },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            day: { $dayOfMonth: '$date' },
+            type: '$type',
+          },
+          total: { $sum: '$amount' },
+          totalWithRounding: {
+            $sum: { $add: ['$amount', { $ifNull: ['$roundingAmount', 0] }] },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.day',
+          data: {
+            $push: {
+              type: '$_id.type',
+              total: '$total',
+              totalWithRounding: '$totalWithRounding',
+            },
+          },
+        },
+      },
+      {
+        $sort: { _id: 1 as 1 | -1 },
+      },
+    ];
+
+    const rawData = await this.transactionModel.aggregate(pipeline);
+
+    const formattedData = rawData.map((dayData) => {
+      const metrics = {
+        day: dayData._id,
+        deposits: 0,
+        expenses: 0,
+        investments: 0,
+      };
+
+      dayData.data.forEach((item) => {
+        switch (item.type) {
+          case TRANSACTION_TYPES.DEPOSIT:
+            metrics.deposits += item.total;
+            break;
+          case TRANSACTION_TYPES.PURCHASE:
+          case TRANSACTION_TYPES.WITHDRAWAL:
+            metrics.expenses += item.totalWithRounding;
+            break;
+          case TRANSACTION_TYPES.INVESTMENT:
+            metrics.investments += item.total;
+            break;
+        }
+      });
+
+      return metrics;
+    });
+
+    return formattedData;
   }
 }

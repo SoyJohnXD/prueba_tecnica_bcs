@@ -34,8 +34,6 @@ export const useAuth = ({
     if (cookieToken && !token) {
       setToken(cookieToken);
     }
-
-    // Manejar redirecciones solo cuando estemos listos
     if (redirectTo && !redirectIfFound && !cookieToken) {
       router.push(redirectTo);
     }

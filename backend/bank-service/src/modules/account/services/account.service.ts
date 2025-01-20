@@ -191,16 +191,16 @@ export class AccountService {
       throw new NotFoundException('Cuenta');
     }
 
-    const [transactions, investments] = await Promise.all([
-      this.transactionService.getUserTransactions(userId, { limit: 10 }),
+    const [transactions, investments, monthlyMetrics, graphData] =
+      await Promise.all([
+        this.transactionService.getUserTransactions(userId, { limit: 10 }),
+        this.investmentService.getCurrentInvestments(
+          account._id as Types.ObjectId,
+        ),
+        this.transactionService.getMonthlyMetrics(userId),
+        this.transactionService.getGraphData(userId),
+      ]);
 
-      this.investmentService.getCurrentInvestments(
-        account._id as Types.ObjectId,
-      ),
-    ]);
-
-    const monthlyMetrics =
-      await this.transactionService.getTransactionStats(userId);
     const investmentMetrics =
       await this.investmentService.getInvestmentMetrics(investments);
 
@@ -211,11 +211,26 @@ export class AccountService {
         investmentBalance: account.investmentBalance,
         roundingAccumulatedBalance: account.roundingAccumulatedBalance,
       },
+      metrics: {
+        monthlySavings: monthlyMetrics.monthlySavings,
+        monthlyIncome: monthlyMetrics.monthlyIncome,
+        monthlyExpenses: monthlyMetrics.monthlyExpenses,
+        totalInvested: investmentMetrics.totalInvested,
+        currentReturn: investmentMetrics.averageReturnRate,
+        returnAmount: investmentMetrics.totalReturns,
+      },
       configuration: account.configuration,
       currentGoal: account.currentGoal,
       recentTransactions: transactions,
-      monthlyMetrics,
-      investmentMetrics,
+      statistics: {
+        ...monthlyMetrics,
+        investments: {
+          total: investmentMetrics.totalInvested,
+          returnRate: investmentMetrics.averageReturnRate,
+          activeInvestments: investmentMetrics.activeInvestments,
+        },
+        graphData,
+      },
     };
   }
 }

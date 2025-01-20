@@ -13,22 +13,22 @@ interface ExpectedReturn {
   _id: string;
 }
 
-interface Configuration {
-  _id: string;
-  accountId: string;
-  userId: string;
+export interface Configuration {
+  _id?: string;
+  accountId?: string;
+  userId?: string;
   automaticRoundingEnabled: boolean;
   roundingType: string;
   roundingAmount: number;
   maxRoundingAmount: number;
   minAccountBalance: number;
   riskProfile: string;
-  expectedReturn: ExpectedReturn;
+  expectedReturn?: ExpectedReturn;
   investmentThreshold: number;
   investmentTrigger: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
 interface Investment {
@@ -67,31 +67,45 @@ export interface Transaction {
   roundingAmount?: number;
 }
 
-interface MetricDetail {
-  total: number;
-  count: number;
-  average: number;
-}
-
-interface MonthlyMetrics {
-  monthly: {
-    deposit: MetricDetail;
-    purchase: MetricDetail;
-    investment: MetricDetail;
-  };
-}
-
-interface InvestmentMetrics {
+interface Metrics {
+  monthlySavings: number;
+  monthlyIncome: number;
+  monthlyExpenses: number;
   totalInvested: number;
-  totalReturns: number;
-  averageReturnRate: number;
-  activeInvestments: number;
+  currentReturn: number;
+  returnAmount: number;
+}
+
+interface GraphDataPoint {
+  day: number;
+  deposits: number;
+  expenses: number;
+  investments: number;
+}
+
+interface Statistics {
+  monthlySavings: number;
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  totalRounding: number;
+  investments: {
+    total: number;
+    returnRate: number;
+    activeInvestments: number;
+  };
+  graphData: GraphDataPoint[];
 }
 
 export interface AccountResponse {
   account: Account;
+  metrics: Metrics;
   configuration: Configuration;
   recentTransactions: Transaction[];
-  monthlyMetrics: MonthlyMetrics;
-  investmentMetrics: InvestmentMetrics;
+  statistics: Statistics;
+}
+
+export interface RoundSimulateResponse {
+  originalAmount: number;
+  roundingAmount: number;
+  totalAmount: number;
 }

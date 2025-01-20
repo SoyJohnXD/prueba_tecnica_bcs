@@ -19,6 +19,7 @@ interface SelectProps
   placeholder?: string;
   onChange?: (value: string | number) => void;
   classContainer?: string;
+  ClassInputContainer?: string;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -27,6 +28,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       className,
       classContainer = "",
+      ClassInputContainer = "",
       label,
       icon,
       error,
@@ -84,6 +86,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <div
             onClick={() => setIsOpen(!isOpen)}
             className={`
+              ${ClassInputContainer}
               flex items-center h-12 w-full rounded-full border border-input 
               bg-background px-4 py-2 ring-offset-background 
               transition-all duration-200 cursor-pointer

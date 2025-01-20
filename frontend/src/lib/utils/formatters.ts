@@ -1,3 +1,5 @@
+import { AccountResponse } from "@/types/bank";
+
 export const formatCurrency = (value: string): string => {
   const number = value.replace(/\D/g, "");
 
@@ -46,4 +48,22 @@ export const getRandomAmount = (max = 99999): number => {
 
 export const formatNumberWithDots = (number: string): string => {
   return number.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+
+export interface DataPoint {
+  name: string;
+  ingresos: number;
+  gastos: number;
+}
+
+export const formatLineChartData = (
+  accountData: AccountResponse
+): DataPoint[] => {
+  if (!accountData.statistics?.graphData.length) return [];
+
+  return accountData.statistics?.graphData.map((data) => ({
+    name: `Día ${data.day}`,
+    ingresos: data.deposits / 1000,
+    gastos: data.expenses / 1000,
+  }));
 };

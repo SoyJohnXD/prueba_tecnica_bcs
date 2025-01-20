@@ -92,7 +92,7 @@ export class InvestmentService {
       userId,
       type: TRANSACTION_TYPES.RETURN,
       amount: investment.amount + investment.actualReturn,
-      description: 'Retiro de inversión',
+      description: 'Retorno de inversión',
       goalId: investment.goalId,
       investmentId: investment._id as Types.ObjectId,
     });

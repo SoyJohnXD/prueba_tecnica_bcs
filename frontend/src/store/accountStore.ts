@@ -1,15 +1,18 @@
+import { AccountResponse, RoundSimulateResponse } from "@/types/bank";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { AccountResponse } from "@/types/bank";
 
 interface AccountState {
   accountData: AccountResponse | null;
+  roundSimulate: RoundSimulateResponse | null;
   isLoading: boolean;
   error: string | null;
-
+  setRoundSimulate: (data: RoundSimulateResponse) => void;
   setAccountData: (data: AccountResponse) => void;
   updateConfiguration: (config: AccountResponse["configuration"]) => void;
   updateBalance: (amount: number) => void;
+  updateMetrics: (metrics: AccountResponse["metrics"]) => void;
+  updateStatistics: (statistics: AccountResponse["statistics"]) => void;
   addTransaction: (
     transaction: AccountResponse["recentTransactions"][0]
   ) => void;
@@ -20,6 +23,7 @@ interface AccountState {
 
 const initialState = {
   accountData: null,
+  roundSimulate: null,
   isLoading: false,
   error: null,
 };
@@ -31,6 +35,9 @@ export const useAccountStore = create<AccountState>()(
 
       setAccountData: (data) =>
         set({ accountData: data, isLoading: false, error: null }),
+
+      setRoundSimulate: (data) =>
+        set((state) => ({ ...state, roundSimulate: data })),
 
       updateConfiguration: (config) =>
         set((state) => ({
@@ -52,6 +59,20 @@ export const useAccountStore = create<AccountState>()(
             : null,
         })),
 
+      updateMetrics: (metrics) =>
+        set((state) => ({
+          accountData: state.accountData
+            ? { ...state.accountData, metrics }
+            : null,
+        })),
+
+      updateStatistics: (statistics) =>
+        set((state) => ({
+          accountData: state.accountData
+            ? { ...state.accountData, statistics }
+            : null,
+        })),
+
       addTransaction: (transaction) =>
         set((state) => ({
           accountData: state.accountData
@@ -66,14 +87,11 @@ export const useAccountStore = create<AccountState>()(
         })),
 
       setLoading: (status) => set({ isLoading: status }),
-
       setError: (error) => set({ error }),
-
       reset: () => set(initialState),
     }),
     {
       name: "account-storage",
-      // Opcional: Puedes especificar qué partes del estado quieres persistir
       partialize: (state) => ({
         accountData: state.accountData,
       }),
@@ -81,20 +99,16 @@ export const useAccountStore = create<AccountState>()(
   )
 );
 
-// Selectores útiles
 export const useAccountSelectors = {
   selectAccount: (state: AccountState) => state.accountData?.account,
   selectConfiguration: (state: AccountState) =>
     state.accountData?.configuration,
   selectTransactions: (state: AccountState) =>
     state.accountData?.recentTransactions,
-  selectMetrics: (state: AccountState) => ({
-    monthly: state.accountData?.monthlyMetrics,
-    investment: state.accountData?.investmentMetrics,
-  }),
+  selectMetrics: (state: AccountState) => state.accountData?.metrics,
+  selectStatistics: (state: AccountState) => state.accountData?.statistics,
 };
 
-// Hook personalizado para obtener datos de la cuenta
 export const useAccountData = () => {
   const accountStore = useAccountStore();
 
@@ -102,15 +116,16 @@ export const useAccountData = () => {
     account: accountStore.accountData?.account,
     configuration: accountStore.accountData?.configuration,
     transactions: accountStore.accountData?.recentTransactions,
-    monthlyMetrics: accountStore.accountData?.monthlyMetrics,
-    investmentMetrics: accountStore.accountData?.investmentMetrics,
+    metrics: accountStore.accountData?.metrics,
+    statistics: accountStore.accountData?.statistics,
     isLoading: accountStore.isLoading,
     error: accountStore.error,
 
-    // Acciones
     setAccountData: accountStore.setAccountData,
     updateConfiguration: accountStore.updateConfiguration,
     updateBalance: accountStore.updateBalance,
+    updateMetrics: accountStore.updateMetrics,
+    updateStatistics: accountStore.updateStatistics,
     addTransaction: accountStore.addTransaction,
     reset: accountStore.reset,
   };

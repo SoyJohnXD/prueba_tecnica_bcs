@@ -1,4 +1,3 @@
-// src/components/ui/Input/Input.tsx
 import React, { forwardRef, useState } from "react";
 import { ValidationType, validators } from "@utils/validations";
 import { formatCurrency } from "@utils/formatters";
@@ -11,6 +10,7 @@ interface InputProps
   type: ValidationType;
   onValidChange?: (value: string, isValid: boolean) => void;
   classContainer?: string;
+  classInputWrapper?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -18,6 +18,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       className,
       classContainer = "",
+      classInputWrapper = "",
       type = "text",
       label,
       icon,
@@ -55,6 +56,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative group">
           <div
             className={`
+              ${classInputWrapper}
             flex items-center h-12 w-full rounded-full border border-input 
             bg-background px-4 py-2 ring-offset-background 
             transition-all duration-200 

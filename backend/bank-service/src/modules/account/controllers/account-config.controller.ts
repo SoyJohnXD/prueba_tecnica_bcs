@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Body, Req } from '@nestjs/common';
+import { Controller, Get, Patch, Body, Req, Query } from '@nestjs/common';
 import { AccountConfigService } from '../services/account-config.service';
 import { UpdateConfigDto } from '../dtos/config/update-config.dto';
 import { RequestWithUser } from 'src/shared/auth/interfaces/auth.interface';
@@ -25,19 +25,23 @@ export class AccountConfigController {
   @Get('calculate-rounding')
   async calculateRoundingAmount(
     @Req() request: RequestWithUser,
-    @Body('amount') amount: number,
+    @Query('amount') amount: string,
   ) {
     const { user } = request.user;
     const config = await this.accountConfigService.getConfigByUserId(
       user.userId,
     );
+
     const roundingAmount =
-      await this.accountConfigService.calculateRoundingAmount(amount, config);
+      await this.accountConfigService.calculateRoundingAmount(
+        parseInt(amount),
+        config,
+      );
 
     return {
       originalAmount: amount,
       roundingAmount,
-      totalAmount: amount + roundingAmount,
+      totalAmount: parseInt(amount) + roundingAmount,
     };
   }
 }
