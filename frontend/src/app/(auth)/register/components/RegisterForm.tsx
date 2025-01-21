@@ -67,7 +67,9 @@ export const RegisterForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (Object.values(isValid).some((valid) => !valid)) return;
+    const valuesArray = Object.values(isValid);
+    valuesArray.pop();
+    if (valuesArray.some((valid) => !valid)) return;
     onSubmit(formData);
   };
 

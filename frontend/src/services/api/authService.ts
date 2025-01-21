@@ -28,7 +28,7 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: async (userData: Register) => {
       const { data } = await authApi.post<RegisterResponse>(
-        "api/auth/register",
+        "/api/auth/register",
         userData
       );
       return data;

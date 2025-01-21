@@ -7,7 +7,6 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/login") ||
     request.nextUrl.pathname.startsWith("/register");
 
-  // Si no hay token y no es una página de auth, redirigir a login
   if (!token && !isAuthPage) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", request.nextUrl.pathname);

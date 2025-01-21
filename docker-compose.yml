@@ -32,6 +32,18 @@ services:
     depends_on:
       - mongodb
       - auth-service
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_AUTH_API_URL=http://auth-service:3002
+      - NEXT_PUBLIC_BANK_API_URL=http://bank-service:3001
+    depends_on:
+      - auth-service
+      - bank-service
 
 volumes:
   mongodb_data:

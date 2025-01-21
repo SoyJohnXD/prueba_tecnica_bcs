@@ -21,6 +21,7 @@ async function bootstrap() {
     origin: [
       configService.get('BANK_SERVICE_URL'),
       configService.get('CLIENT_URL'),
+      'http://localhost:3000',
     ],
     credentials: true,
   });
