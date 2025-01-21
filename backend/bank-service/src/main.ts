@@ -8,11 +8,12 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+
   app.enableCors({
     origin: [
       configService.get('BANK_SERVICE_URL'),
       configService.get('CLIENT_URL'),
-      'localhost:3000',
+      'http://localhost:3000',
     ],
     credentials: true,
   });
