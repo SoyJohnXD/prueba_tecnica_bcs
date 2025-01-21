@@ -4,7 +4,6 @@ import {
   FaHouse,
   FaWallet,
   FaPiggyBank,
-  FaGear,
   FaX,
   FaDoorOpen,
   FaHeadset,
@@ -12,7 +11,7 @@ import {
 import IconBubble from "../ui/IconBubble";
 import { Button } from "../ui/Button";
 import Link from "next/link";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useLogout } from "@/services/api/authService";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -20,7 +19,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ isOpen, close }: SidebarProps) => {
-  const { logout } = useAuthStore();
+  const logout = useLogout();
   const menuItems = [
     { icon: FaHouse, label: "Home", href: "/dashboard" },
     { icon: FaWallet, label: "Billetera", href: "/dashboard/account" },
@@ -29,7 +28,6 @@ export const Sidebar = ({ isOpen, close }: SidebarProps) => {
       label: "Inversiones",
       href: "/dashboard/account-config",
     },
-    { icon: FaGear, label: "Metas", href: "/dashboard/savings" },
   ];
 
   return (
@@ -71,7 +69,10 @@ export const Sidebar = ({ isOpen, close }: SidebarProps) => {
           </nav>
 
           <div className="border-t pt-4 flex flex-row gap-2">
-            <Button onClick={logout} className="w-full h-9 justify-start gap-2">
+            <Button
+              onClick={() => logout.mutate()}
+              className="w-full h-9 justify-start gap-2"
+            >
               <FaDoorOpen size={23} color="white" />
               Salir
             </Button>

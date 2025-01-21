@@ -41,7 +41,7 @@ export const useAuth = ({
     if (redirectIfFound && cookieToken && redirectTo) {
       router.push(redirectTo);
     }
-  }, [isReady, token, redirectTo, redirectIfFound]);
+  }, [isReady]);
 
   return {
     user,

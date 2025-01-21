@@ -22,6 +22,19 @@ export const useLogin = () => {
   });
 };
 
+export const useLogout = () => {
+  const logout = useAuthStore((state) => state.logout);
+  const router = useRouter();
+  return useMutation({
+    mutationFn: async (): Promise<void> => {
+      return logout();
+    },
+    onSuccess() {
+      router.push("/login");
+    },
+  });
+};
+
 export const useRegister = () => {
   const router = useRouter();
 

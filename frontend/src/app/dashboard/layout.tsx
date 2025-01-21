@@ -11,7 +11,7 @@ export default function DashboardLayout({
 }) {
   useAuth({
     redirectTo: "/login",
-    redirectIfFound: true,
+    redirectIfFound: false,
   });
   const [isOpen, setIsOpen] = useState(false);
   return (
